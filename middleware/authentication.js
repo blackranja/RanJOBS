@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
     //Check Header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer')) {
-        throw new UnauthenticatedError('Authentication Invalid');
+        throw new UnauthenticatedError('Authentication Invalid101');
 
     }
 
@@ -15,13 +15,13 @@ const auth = (req, res, next) => {
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         ///attch the user to the job routes
-        req.user = user;
+        //req.user = user;
         const user = User.findById(payload.id).select('-password');
-
+        req.user = user;
         req.user = { userId: payload.userId, name: payload.name };
         next();
     } catch (error) {
-        throw new UnauthenticatedError('Authenctication invalid');
+        throw new UnauthenticatedError('Authenctication invalid202');
     }
 }
 module.exports = auth;
