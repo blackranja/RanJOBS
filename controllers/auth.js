@@ -1,11 +1,18 @@
 const Users = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
-const { BadRequestError } = require('../errors');
-const bcrypt = require('bcryptjs');
+const { BadRequestError, UnauthenticatedError } = require('../errors');
+const User = require('../models/User');
+
+
+//const bcrypt = require('bcryptjs');
+//const jwt = require('jsonwebtoken');
 
 
 
 const register = async (req, res) => {
+    const user = await Users.create({ ...req.body });
+    const token = user.createJWT();
+
     //=============================================================================================
     /*
     const { name, email, password } = req.body;
@@ -22,11 +29,34 @@ const register = async (req, res) => {
     }
     */
     //---------------------------------------------------------------------------
-    const user = await Users.create({ ...req.body });
-    res.status(StatusCodes.CREATED).json({ user })
+
+
+
+    //=====================================================================================================
+    /*
+    const token = jwt.sign({ userId: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '30d', })
+*/
+    //==================================================================================================
+
+
+    res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
 }
 const login = async (req, res) => {
-    res.send('login user');
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        throw new BadRequestError('Please Provide email and password');
+
+    }
+
+    const user = await Users.findOne({ email });
+    //compare password
+    if (!user) {
+        throw new UnauthenticatedError('Invalid Credentials');
+    }
+
+    const token = user.createJWT();
+    res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
 }
 
 
