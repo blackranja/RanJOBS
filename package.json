@@ -4,7 +4,7 @@
   "description": "A Jobs Application and API, using Node.js/Express.js React.js/Next.js/Redux MongoDB/Mongoose/JWT",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -37,5 +37,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
+  },
+  "engines":{
+    "node":"16.x"
   }
 }
